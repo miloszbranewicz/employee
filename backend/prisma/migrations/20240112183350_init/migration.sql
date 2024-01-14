@@ -1,11 +1,12 @@
 -- CreateTable
 CREATE TABLE `Employee` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `firstName` VARCHAR(191) NOT NULL,
-    `lastName` VARCHAR(191) NOT NULL,
+    `firstName` VARCHAR(191) NULL,
+    `lastName` VARCHAR(191) NULL,
     `email` VARCHAR(191) NOT NULL,
-    `phoneNumber` VARCHAR(191) NOT NULL,
+    `phoneNumber` VARCHAR(191) NULL,
     `role` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Employee_email_key`(`email`),
     PRIMARY KEY (`id`)
@@ -15,10 +16,10 @@ CREATE TABLE `Employee` (
 CREATE TABLE `Project` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
-    `location` VARCHAR(191) NOT NULL,
-    `startDate` DATETIME(3) NOT NULL,
+    `location` VARCHAR(191) NULL,
+    `startDate` DATETIME(3) NULL,
     `endDate` DATETIME(3) NULL,
-    `status` VARCHAR(191) NOT NULL,
+    `status` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -47,7 +48,7 @@ CREATE TABLE `Permission` (
 CREATE TABLE `Report` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `projectId` INTEGER NOT NULL,
-    `description` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
     `creationDate` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
