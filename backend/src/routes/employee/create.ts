@@ -1,18 +1,17 @@
+import { Employee } from "@prisma/client";
 import { Request, Response } from "express";
-import { authRouter } from "./routes";
-import { passportLocal } from "../../config/passport";
 import { db } from "../../config/db";
 import bcrypt from "bcrypt";
 import { Role } from "../../config/constants";
-import { Employee } from "@prisma/client";
 
 /**
  * @swagger
- * /auth/register:
+ * /employee/create:
  *   post:
- *     summary: Register a new user with email and password
+ *     summary: Create a new user with email and password
  *     description: |
- *       Register a new user with an email and password. Only administrators can register new users.
+ *       Create a new user with an email and password. Only administrators can create new users.
+ *       Passwords are hashed using bcrypt with a salt round of 12 before storing.
  *     tags:
  *       - Authentication
  *     requestBody:
@@ -36,7 +35,7 @@ import { Employee } from "@prisma/client";
  *                 password: secret123
  *     responses:
  *       201:
- *         description: User registration successful
+ *         description: User creation successful
  *         content:
  *           application/json:
  *             schema:
@@ -44,29 +43,13 @@ import { Employee } from "@prisma/client";
  *               properties:
  *                 user:
  *                   type: object
- *                   description: The registered user's information.
+ *                   description: The created user's information.
  *                   properties:
- *                     id:
- *                       type: number
  *                     email:
- *                       type: string
- *                     phoneNumber:
- *                       type: string
- *                     firstName:
- *                       type: string
- *                     lastName:
- *                       type: string
- *                     role:
  *                       type: string
  *             example:
  *               user:
- *                 id: 1
  *                 email: john@example.com
- *                 phoneNumber: 1234567890
- *                 firstName: John
- *                 lastName: Doe
- *                 role: EMPLOYEE
- *
  *       400:
  *         description: Bad request. Invalid or missing email/password, or user already exists.
  *         content:
@@ -82,7 +65,7 @@ import { Employee } from "@prisma/client";
  *               User already exists:
  *                 error: User already exists
  *       500:
- *         description: Internal server error occurred during registration.
+ *         description: Internal server error occurred during user creation.
  *         content:
  *           application/json:
  *             schema:
@@ -93,7 +76,7 @@ import { Employee } from "@prisma/client";
  *             example:
  *               error: Internal server error
  */
-export const register = async (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response) => {
   try {
     const { user } = req.body;
     const { email, password } = user as Employee;

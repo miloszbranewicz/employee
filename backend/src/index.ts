@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import bodyparser from "body-parser";
 import { passportLocal as passport } from "./config/passport";
 import { authRouter } from "./routes/auth/routes";
+import { employeeRouter } from "./routes/employee/routes";
 
 dotenv.config();
 const swaggerUI = require("swagger-ui-express");
@@ -16,6 +17,7 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 // Routes
 app.use(authRouter);
+app.use(employeeRouter);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

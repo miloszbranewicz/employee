@@ -40,7 +40,7 @@ import { Role as TRole } from "../../types";
  *                   type: string
  *                   description: JWT token for authenticated user.
  *             example:
- *               token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *               token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
  *       400:
  *         description: Bad request. Invalid or missing email/password, or user not found.
  *         content:

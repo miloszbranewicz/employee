@@ -8,5 +8,3 @@ function signWithJWT(payload: TokenPayload): string {
 }
 
 export default signWithJWT;
-
-

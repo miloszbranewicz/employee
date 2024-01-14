@@ -1,0 +1,578 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Authentication API",
+    "version": "1.0.0",
+    "description": "API documentation for user authentication."
+  },
+  "basePath": "/",
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "Authenticate a user by email and password",
+        "description": "Authenticate a user by providing their email and password.\n",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "description": "User's email and password for authentication.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "john@example.com",
+                  "password": "secret123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "JWT token for authenticated user."
+                    }
+                  }
+                },
+                "example": {
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Invalid or missing email/password, or user not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "Invalid email and/or password": {
+                    "error": "Email and password required"
+                  },
+                  "User not found": {
+                    "error": "User not found"
+                  },
+                  "Invalid password": {
+                    "error": "Invalid password"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during authentication.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employee/create": {
+      "post": {
+        "summary": "Create a new user with email and password",
+        "description": "Create a new user with an email and password. Only administrators can create new users.\nPasswords are hashed using bcrypt with a salt round of 12 before storing.\n",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "description": "User information including email and password.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string"
+                      },
+                      "password": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "user": {
+                    "email": "john@example.com",
+                    "password": "secret123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User creation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "description": "The created user's information.",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "user": {
+                    "email": "john@example.com"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Invalid or missing email/password, or user already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "Invalid email and/or password": {
+                    "error": "Email and password required"
+                  },
+                  "User already exists": {
+                    "error": "User already exists"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during user creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employees/{id}": {
+      "delete": {
+        "summary": "Delete an employee by ID",
+        "description": "Deletes an employee by their unique ID.",
+        "tags": [
+          "Employees"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the employee to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Employee not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Employee not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get an employee by ID",
+        "description": "Retrieves an employee's information by their unique ID.",
+        "tags": [
+          "Employees"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the employee to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "The ID of the employee."
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "The email of the employee."
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "description": "The first name of the employee."
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "description": "The last name of the employee."
+                    },
+                    "permissions": {
+                      "type": "array",
+                      "description": "List of permissions for the employee.",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "phoneNumber": {
+                      "type": "string",
+                      "description": "The phone number of the employee."
+                    },
+                    "timeRecords": {
+                      "type": "array",
+                      "description": "List of time records for the employee.",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "role": {
+                      "type": "string",
+                      "description": "The role of the employee."
+                    }
+                  }
+                },
+                "example": {
+                  "id": 1,
+                  "email": "john@example.com"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Employee not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Employee not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an employee by ID",
+        "description": "Updates an employee's information by their unique ID.",
+        "tags": [
+          "Employees"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the employee to update."
+          },
+          {
+            "in": "body",
+            "name": "employee",
+            "required": true,
+            "description": "The updated employee data.",
+            "schema": {
+              "type": "object",
+              "properties": null
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "The ID of the updated employee."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Employee not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Employee not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employees": {
+      "get": {
+        "summary": "Get all employees",
+        "description": "Retrieves a list of all employees with their information.",
+        "tags": [
+          "Employees"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of employees retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "employees": {
+                      "type": "array",
+                      "description": "List of employees.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "description": "The ID of the employee."
+                          },
+                          "email": {
+                            "type": "string",
+                            "description": "The email of the employee."
+                          },
+                          "firstName": {
+                            "type": "string",
+                            "description": "The first name of the employee."
+                          },
+                          "lastName": {
+                            "type": "string",
+                            "description": "The last name of the employee."
+                          },
+                          "permissions": {
+                            "type": "array",
+                            "description": "List of permissions for the employee.",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "phoneNumber": {
+                            "type": "string",
+                            "description": "The phone number of the employee."
+                          },
+                          "timeRecords": {
+                            "type": "array",
+                            "description": "List of time records for the employee.",
+                            "items": {
+                              "type": "object"
+                            }
+                          },
+                          "role": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "employees": [
+                    {
+                      "id": 1,
+                      "email": "john@example.com"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}
