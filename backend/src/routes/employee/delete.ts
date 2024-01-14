@@ -3,12 +3,12 @@ import { db } from "../../config/db";
 
 /**
  * @swagger
- * /employees/{id}:
+ * /employee/{id}:
  *   delete:
  *     summary: Delete an employee by ID
  *     description: Deletes an employee by their unique ID.
  *     tags:
- *       - Employees
+ *       - Employee
  *     parameters:
  *       - in: path
  *         name: id

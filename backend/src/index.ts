@@ -8,16 +8,17 @@ import { employeeRouter } from "./routes/employee/routes";
 dotenv.config();
 const swaggerUI = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
+const swaggerDocument = require("./config/swagger.json");
 const app: Express = express();
 const port = process.env.PORT || 3000;
 app.use(bodyparser.json());
 app.use(passport.initialize());
 
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // Routes
 app.use(authRouter);
-app.use(employeeRouter);
+app.use(passport.authenticate("jwt", { session: false }), employeeRouter);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

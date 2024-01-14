@@ -3,12 +3,12 @@ import { db } from "../../config/db";
 
 /**
  * @swagger
- * /employees:
+ * /employee:
  *   get:
  *     summary: Get all employees
  *     description: Retrieves a list of all employees with their information.
  *     tags:
- *       - Employees
+ *       - Employee
  *     responses:
  *       200:
  *         description: List of employees retrieved successfully
@@ -67,24 +67,24 @@ import { db } from "../../config/db";
  *               error: Internal server error
  */
 export const getAll = async (req: Request, res: Response) => {
-    try {
-      // Handle GET request for all employees
-      const employees = await db.employee.findMany({
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          permissions: true,
-          phoneNumber: true,
-          timeRecords: true,
-          role: true,
-        },
-      });
-  
-      res.status(200).json({ employees });
-    } catch (error) {
-      console.error("Error while retrieving employees:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  };
+  try {
+    // Handle GET request for all employees
+    const employees = await db.employee.findMany({
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        permissions: true,
+        phoneNumber: true,
+        timeRecords: true,
+        role: true,
+      },
+    });
+
+    res.status(200).json({ employees });
+  } catch (error) {
+    console.error("Error while retrieving employees:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

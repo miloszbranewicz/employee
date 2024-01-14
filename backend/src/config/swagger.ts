@@ -23,18 +23,19 @@ function findRouteFiles(dir: string): string[] {
 }
 
 const apiFiles: string[] = findRouteFiles(routesDirectory);
+console.log(apiFiles);
 
 const options = {
   swaggerDefinition: {
-    openapi: "3.1.0",
+    openapi: "3.0.0", // Specify the OpenAPI version as "3.1.0"
     info: {
-      title: "Authentication API",
-      version: "1.0.0",
-      description: "API documentation for user authentication.",
+      title: "Authentication API", // Title of your API
+      version: "1.0.0", // Version of your API
+      description: "API documentation for user authentication.", // Description of your API
     },
-    basePath: "/",
+    basePath: "/", // Base path for your API (if applicable)
   },
-  apis: apiFiles,
+  apis: apiFiles, // Path to the file containing your route handlers
 };
 
 const swaggerSpec = swaggerJsdoc(options);
@@ -43,7 +44,7 @@ const swaggerSpec = swaggerJsdoc(options);
 const swaggerJson = JSON.stringify(swaggerSpec, null, 2);
 
 // Specify the file name where you want to save the JSON
-const jsonFileName = "swagger.json";
+const jsonFileName = path.join(__dirname, "../swagger.json");
 
 // Write the JSON content to the file
 fs.writeFileSync(jsonFileName, swaggerJson);

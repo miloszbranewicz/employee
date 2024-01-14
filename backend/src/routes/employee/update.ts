@@ -1,11 +1,11 @@
 /**
  * @swagger
- * /employees/{id}:
+ * /employee/{id}:
  *   put:
  *     summary: Update an employee by ID
  *     description: Updates an employee's information by their unique ID.
  *     tags:
- *       - Employees
+ *       - Employee
  *     parameters:
  *       - in: path
  *         name: id

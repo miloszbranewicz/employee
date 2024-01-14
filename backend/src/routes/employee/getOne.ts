@@ -1,11 +1,11 @@
 /**
  * @swagger
- * /employees/{id}:
+ * /employee/{id}:
  *   get:
  *     summary: Get an employee by ID
  *     description: Retrieves an employee's information by their unique ID.
  *     tags:
- *       - Employees
+ *       - Employee
  *     parameters:
  *       - in: path
  *         name: id

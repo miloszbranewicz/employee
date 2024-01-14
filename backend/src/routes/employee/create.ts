@@ -13,7 +13,7 @@ import { Role } from "../../config/constants";
  *       Create a new user with an email and password. Only administrators can create new users.
  *       Passwords are hashed using bcrypt with a salt round of 12 before storing.
  *     tags:
- *       - Authentication
+ *       - Employee
  *     requestBody:
  *       description: User information including email and password.
  *       required: true
@@ -76,7 +76,7 @@ import { Role } from "../../config/constants";
  *             example:
  *               error: Internal server error
  */
-export const create = async (req: Request, res: Response) => {
+export const createOne = async (req: Request, res: Response) => {
   try {
     const { user } = req.body;
     const { email, password } = user as Employee;
