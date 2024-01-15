@@ -5,7 +5,7 @@ import { Role } from "./config/constants";
 type Role = (typeof Role)[keyof typeof Role];
 
 interface TokenPayload {
-  sub: number
+  sub: number;
   email: string;
   role: Role;
 }
@@ -14,3 +14,8 @@ interface RequestWithUser extends Request {
   user: JwtPayload & TokenPayload;
 }
 
+interface RequestWithProject extends Request {
+  body: {
+    project: Project;
+  };
+}

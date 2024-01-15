@@ -104,7 +104,7 @@
         }
       }
     },
-    "/employee/create": {
+    "/employee": {
       "post": {
         "summary": "Create a new user with email and password",
         "description": "Create a new user with an email and password. Only administrators can create new users.\nPasswords are hashed using bcrypt with a salt round of 12 before storing.\n",
@@ -193,6 +193,99 @@
           },
           "500": {
             "description": "Internal server error occurred during user creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all employees",
+        "description": "Retrieves a list of all employees with their information.",
+        "tags": [
+          "Employee"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of employees retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "employees": {
+                      "type": "array",
+                      "description": "List of employees.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "description": "The ID of the employee."
+                          },
+                          "email": {
+                            "type": "string",
+                            "description": "The email of the employee."
+                          },
+                          "firstName": {
+                            "type": "string",
+                            "description": "The first name of the employee."
+                          },
+                          "lastName": {
+                            "type": "string",
+                            "description": "The last name of the employee."
+                          },
+                          "permissions": {
+                            "type": "array",
+                            "description": "List of permissions for the employee.",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "phoneNumber": {
+                            "type": "string",
+                            "description": "The phone number of the employee."
+                          },
+                          "timeRecords": {
+                            "type": "array",
+                            "description": "List of time records for the employee.",
+                            "items": {
+                              "type": "object"
+                            }
+                          },
+                          "role": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "employees": [
+                    {
+                      "id": 1,
+                      "email": "john@example.com"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during retrieval",
             "content": {
               "application/json": {
                 "schema": {
@@ -477,76 +570,73 @@
         }
       }
     },
-    "/employee": {
+    "/employees/{id}/time-records": {
       "get": {
-        "summary": "Get all employees",
-        "description": "Retrieves a list of all employees with their information.",
+        "summary": "Get all time records for an employee",
+        "description": "Retrieves all time records for a specific employee based on their ID.",
         "tags": [
-          "Employee"
+          "Time Records"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the employee whose time records are to be retrieved."
+          }
         ],
         "responses": {
           "200": {
-            "description": "List of employees retrieved successfully",
+            "description": "Time records retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "employees": {
+                    "timeRecords": {
                       "type": "array",
-                      "description": "List of employees.",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer",
-                            "description": "The ID of the employee."
-                          },
-                          "email": {
-                            "type": "string",
-                            "description": "The email of the employee."
-                          },
-                          "firstName": {
-                            "type": "string",
-                            "description": "The first name of the employee."
-                          },
-                          "lastName": {
-                            "type": "string",
-                            "description": "The last name of the employee."
-                          },
-                          "permissions": {
-                            "type": "array",
-                            "description": "List of permissions for the employee.",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          "phoneNumber": {
-                            "type": "string",
-                            "description": "The phone number of the employee."
-                          },
-                          "timeRecords": {
-                            "type": "array",
-                            "description": "List of time records for the employee.",
-                            "items": {
-                              "type": "object"
-                            }
-                          },
-                          "role": {
-                            "type": "string"
-                          }
-                        }
-                      }
+                      "items": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid id parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
                     }
                   }
                 },
                 "example": {
-                  "employees": [
-                    {
-                      "id": 1,
-                      "email": "john@example.com"
+                  "error": "Invalid id parameter"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Employee not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
                     }
-                  ]
+                  }
+                },
+                "example": {
+                  "error": "Employee not found"
                 }
               }
             }
@@ -565,6 +655,732 @@
                 },
                 "example": {
                   "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "post": {
+        "summary": "Create a new project",
+        "description": "Creates a new project with the provided details.",
+        "tags": [
+          "Projects"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "project": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ]
+                  }
+                },
+                "example": {
+                  "project": {
+                    "name": "My New Project"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "project": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Name required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Name required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during creation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all projects",
+        "description": "Retrieves a list of all projects.",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Projects retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "projects": {
+                      "type": "array",
+                      "items": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "delete": {
+        "summary": "Delete a project by ID",
+        "description": "Deletes a project by its unique ID.",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the project to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Project ID required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Project ID required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Project not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get a project by ID",
+        "description": "Retrieves a project by its unique ID.",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the project to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Project ID required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Project ID required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Project not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a project by ID",
+        "description": "Updates a project by its unique ID.",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the project to update."
+          },
+          {
+            "in": "body",
+            "name": "project",
+            "description": "The project data to update.",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Project ID required or invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Project ID required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Project not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports": {
+      "get": {
+        "summary": "Get project reports",
+        "description": "Retrieves project reports, including total hours worked and record count for each project.",
+        "tags": [
+          "Reports"
+        ],
+        "responses": {
+          "200": {
+            "description": "Project reports retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "project": {
+                        "type": "object"
+                      },
+                      "totalHoursWorked": {
+                        "type": "number",
+                        "description": "Total hours worked for the project."
+                      },
+                      "recordsCount": {
+                        "type": "number",
+                        "description": "Number of time records for the project."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/{id}": {
+      "get": {
+        "summary": "Get report by ID",
+        "description": "Retrieve report details by its unique ID, including associated time records.",
+        "tags": [
+          "Reports"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the report to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with report details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/report"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid report identifier.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Invalid report identifier."
+              }
+            }
+          },
+          "404": {
+            "description": "report not found.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "report not found."
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during retrieval.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/time-records": {
+      "post": {
+        "summary": "Create a new time record",
+        "description": "Create a new time record entry with employeeId, projectId, date, and hoursWorked.",
+        "tags": [
+          "Time Records"
+        ],
+        "requestBody": {
+          "description": "Time record data to create",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "employeeId": {
+                    "type": "integer",
+                    "description": "The ID of the employee."
+                  },
+                  "projectId": {
+                    "type": "integer",
+                    "description": "The ID of the project."
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "The date of the time record (YYYY-MM-DD)."
+                  },
+                  "hoursWorked": {
+                    "type": "number",
+                    "description": "The number of hours worked."
+                  }
+                },
+                "example": {
+                  "employeeId": 1,
+                  "projectId": 100,
+                  "date": "2022-01-15",
+                  "hoursWorked": 8
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Time record created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data not complete or invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/time-records/{id}": {
+      "delete": {
+        "summary": "Delete a time record by ID",
+        "description": "Delete a time record by its unique identifier.",
+        "tags": [
+          "Time Records"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the time record to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Time record deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or missing ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Time record not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during deletion.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a time record by ID",
+        "description": "Update a time record by its unique identifier.",
+        "tags": [
+          "Time Records"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the time record to update."
+          },
+          {
+            "in": "body",
+            "name": "timeRecord",
+            "description": "The updated time record object.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TimeRecord"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Time record updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or missing ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Time record not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred during update.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }

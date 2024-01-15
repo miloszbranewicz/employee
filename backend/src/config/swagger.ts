@@ -44,9 +44,11 @@ const swaggerSpec = swaggerJsdoc(options);
 const swaggerJson = JSON.stringify(swaggerSpec, null, 2);
 
 // Specify the file name where you want to save the JSON
-const jsonFileName = path.join(__dirname, "../swagger.json");
+const jsonFileName = path.join(__dirname, "./swagger.json");
 
 // Write the JSON content to the file
 fs.writeFileSync(jsonFileName, swaggerJson);
+
+console.log(jsonFileName);
 
 console.log(`Swagger spec saved to ${jsonFileName}`);

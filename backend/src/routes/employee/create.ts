@@ -6,7 +6,7 @@ import { Role } from "../../config/constants";
 
 /**
  * @swagger
- * /employee/create:
+ * /employee:
  *   post:
  *     summary: Create a new user with email and password
  *     description: |

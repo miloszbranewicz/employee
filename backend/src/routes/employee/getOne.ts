@@ -82,6 +82,10 @@ export const getOne = async (req: Request, res: Response) => {
   try {
     const employeeId = Number(req.params.id);
 
+    if (!employeeId) {
+      return res.status(400).json({ error: "Employee ID required" });
+    }
+
     // Find the specific employee
     const employee = await db.employee.findUnique({
       where: { id: employeeId },

@@ -52,6 +52,10 @@ import { db } from "../../config/db";
 export const deleteOne = async (req: Request, res: Response) => {
     try {
       const employeeId = Number(req.params.id);
+
+      if(!employeeId) {
+        return res.status(400).json({ error: "Employee ID not provided" });
+      }
   
       // Find the specific employee
       const employee = await db.employee.findUnique({

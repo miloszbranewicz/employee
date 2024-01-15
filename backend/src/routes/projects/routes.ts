@@ -10,7 +10,7 @@ import { createOne } from "./create";
 
 export const projectsRouter = Router();
 
-// Routes for Employee
+
 projectsRouter.get(
   "/projects",
   getAll
