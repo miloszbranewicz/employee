@@ -1,14 +1,8 @@
 import { Employee } from "@prisma/client";
+import { generateRandomEmail, generateRandomINT } from "../utils/functions";
 const request = require("supertest");
 const baseURL = "http://localhost:3000";
 
-function generateRandomEmail() {
-  return Math.random().toString(36).substring(2, 15) + "@test.com";
-}
-
-function generateRandomINT() {
-  return Math.floor(Math.random() * 1000);
-}
 const id = generateRandomINT();
 
 describe("POST /employee", () => {
