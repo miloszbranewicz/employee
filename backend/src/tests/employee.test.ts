@@ -17,7 +17,7 @@ describe("POST /employee", () => {
       email: generateRandomEmail(),
       password: "testpassword",
       firstName: "testfirstname",
-      lastName: "testlastname",
+      lastName: "testfirstname",
       phoneNumber: "1234567890",
       role: "ADMIN",
       id: id,
@@ -52,11 +52,11 @@ describe("PUT /employee/:id", () => {
   it("Should update an employee", async () => {
     const updatedEmployee = {
       email: generateRandomEmail(),
-      password: "testpassword",
-      firstName: "testfirstname",
-      lastName: "testlastname",
-      phoneNumber: "1234567890",
-      role: "ADMIN",
+      password: "Updated Password",
+      firstName: "Updated First Name",
+      lastName: "Updated Last Name",
+      phoneNumber: "000000000",
+      role: "UPDATED_ROLE",
       id: id,
     };
     const response = await request(baseURL)

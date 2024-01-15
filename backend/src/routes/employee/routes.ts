@@ -1,6 +1,4 @@
 import { Router } from "express";
-import { passportLocal } from "../../config/passport";
-import { db } from "../../config/db";
 import { getOne } from "./getOne";
 import { getAll } from "./getAll";
 
