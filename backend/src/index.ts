@@ -21,10 +21,14 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // Routes
 app.use(authRouter);
-app.use(passport.authenticate("jwt", { session: false }), employeeRouter);
-app.use(passport.authenticate("jwt", { session: false }), projectsRouter);
-app.use(passport.authenticate("jwt", { session: false }), reportsRouter);
-app.use(passport.authenticate("jwt", { session: false }), timeRecordsRouter);
+app.use(employeeRouter);
+app.use(projectsRouter);
+app.use(reportsRouter);
+app.use(timeRecordsRouter);
+// app.use(passport.authenticate("jwt", { session: false }), employeeRouter);
+// app.use(passport.authenticate("jwt", { session: false }), projectsRouter);
+// app.use(passport.authenticate("jwt", { session: false }), reportsRouter);
+// app.use(passport.authenticate("jwt", { session: false }), timeRecordsRouter);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
