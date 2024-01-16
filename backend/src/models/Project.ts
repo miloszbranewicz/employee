@@ -1,21 +1,14 @@
-import { Project as PrismaProject } from "@prisma/client";
+import { Project } from "@prisma/client";
 import { BaseModel } from "../abstracts/Model";
 
-export class ProjectModel extends BaseModel implements PrismaProject {
+export class ProjectModel extends BaseModel {
   endDate: Date | null;
   startDate: Date | null;
   location: string | null;
   name: string;
   status: string | null;
 
-  constructor(
-    id: number,
-    endDate: Date | null,
-    startDate: Date | null,
-    location: string | null,
-    name: string,
-    status: string | null
-  ) {
+  constructor({ id, endDate, startDate, location, name, status }: Project) {
     super(id);
     this.endDate = endDate;
     this.startDate = startDate;

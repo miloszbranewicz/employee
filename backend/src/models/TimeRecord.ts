@@ -1,24 +1,18 @@
-import { TimeRecord as PrismaTimeRecord } from "@prisma/client";
+import { TimeRecord } from "@prisma/client";
 import { BaseModel } from "../abstracts/Model";
 
-export class TimeRecordModel extends BaseModel implements PrismaTimeRecord {
+export class TimeRecordModel extends BaseModel {
   employeeId: number;
   projectId: number;
   date: Date;
   hoursWorked: number;
 
-  constructor(
-    id: number,
-    employeeId: number,
-    projectId: number,
-    date: Date,
-    hours: number
-  ) {
+  constructor({ date, employeeId, hoursWorked, id, projectId }: TimeRecord) {
     super(id);
     this.employeeId = employeeId;
     this.projectId = projectId;
     this.date = date;
-    this.hoursWorked = hours;
+    this.hoursWorked = hoursWorked;
   }
 
   validate(): boolean {

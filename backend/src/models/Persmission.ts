@@ -1,11 +1,11 @@
-import { Permission as PrismaPermission } from "@prisma/client";
+import { Permission } from "@prisma/client";
 import { BaseModel } from "../abstracts/Model";
 
-export class PermissionModel extends BaseModel implements PrismaPermission {
+export class PermissionModel extends BaseModel {
   employeeId: number;
   permissionType: string;
 
-  constructor(id: number, employeeId: number, permissionType: string) {
+  constructor({ id, employeeId, permissionType }: Permission) {
     super(id);
     this.employeeId = employeeId;
     this.permissionType = permissionType;

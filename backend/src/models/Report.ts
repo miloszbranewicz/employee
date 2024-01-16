@@ -1,17 +1,12 @@
-import { Report as PrismaReport } from "@prisma/client";
+import { Report } from "@prisma/client";
 import { BaseModel } from "../abstracts/Model";
 
-export class ReportModel extends BaseModel implements PrismaReport {
+export class ReportModel extends BaseModel {
   projectId: number;
   description: string | null;
   creationDate: Date;
 
-  constructor(
-    id: number,
-    projectId: number,
-    description: string | null,
-    creationDate: Date
-  ) {
+  constructor({ id, projectId, description, creationDate }: Report) {
     super(id);
     this.projectId = projectId;
     this.description = description;

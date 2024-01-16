@@ -1,23 +1,23 @@
-import { Employee as PrismaEmployee } from "@prisma/client";
+import { Employee } from "@prisma/client";
 import { BaseModel } from "../abstracts/Model";
 
-export class EmployeeModel extends BaseModel implements PrismaEmployee {
-  firstName: string;
-  lastName: string;
+export class EmployeeModel extends BaseModel {
+  firstName: string | null;
+  lastName: string | null;
   email: string;
-  role: string;
   phoneNumber: string | null;
+  role: string;
   password: string;
 
-  constructor(
-    id: number,
-    firstName: string,
-    lastName: string,
-    email: string,
-    role: string,
-    phoneNumber: string | null,
-    password: string
-  ) {
+  constructor({
+    id,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    role,
+    password,
+  }: Employee) {
     super(id);
     this.firstName = firstName;
     this.lastName = lastName;
