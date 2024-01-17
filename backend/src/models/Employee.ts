@@ -47,14 +47,17 @@ export class EmployeeModel extends BaseModel {
     return re.test(this.email);
   }
 
-
   validatePassword(): boolean {
     return this.password.length >= 8;
   }
 
-  // Method to validate polish phone number format
   validatePhoneNumber(): boolean {
     const re = /^\+48\d{9}$/;
     return re.test(this.phoneNumber || "");
+  }
+
+  toJSON(): object {
+    const { password, ...rest } = this;
+    return rest;
   }
 }

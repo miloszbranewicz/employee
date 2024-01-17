@@ -2,28 +2,42 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { EmployeeModel } from "../models/Employee";
 import { BaseController } from "../abstracts/Controller";
+import { ErrorResponse } from "../responses/ErrorResponse";
+import { SuccessResponse } from "../responses/SuccessResponse";
 
 const prisma = new PrismaClient();
 
 export class EmployeeController extends BaseController {
   async index(req: Request, res: Response): Promise<void> {
     const employees = await prisma.employee.findMany();
-    res.json(employees.map((employee) => new EmployeeModel(employee)));
+    new SuccessResponse(res).sendSuccess(
+      employees.map((employee) => new EmployeeModel(employee).toJSON()),
+      "Employees found",
+      200
+    );
   }
 
   async show(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
-    if (!id) {
-      res.status(400).send("Missing employee id");
+    if (!id || isNaN(Number(id))) {
+      new ErrorResponse(res).sendError(
+        "Missing employee id",
+        "Bad request",
+        400
+      );
       return;
     }
     const employee = await prisma.employee.findUnique({
       where: { id: Number(id) },
     });
     if (employee) {
-      res.json(new EmployeeModel(employee));
+      new SuccessResponse(res).sendSuccess(
+        new EmployeeModel(employee),
+        "Employee found",
+        200
+      );
     } else {
-      res.status(404).send("Employee not found");
+      new ErrorResponse(res).sendError("Employee not found", "Not found", 404);
     }
   }
 
@@ -31,13 +45,21 @@ export class EmployeeController extends BaseController {
     const newEmployeeData = req.body;
     const newEmployee = new EmployeeModel(newEmployeeData);
     if (!newEmployee.validate()) {
-      res.status(400).send("Invalid employee data");
+      new ErrorResponse(res).sendError(
+        "Invalid employee data",
+        "Bad request",
+        400
+      );
       return;
     }
     const createdEmployee = await prisma.employee.create({
       data: newEmployeeData,
     });
-    res.status(201).json(new EmployeeModel(createdEmployee));
+    new SuccessResponse(res).sendSuccess(
+      new EmployeeModel(createdEmployee),
+      "Employee created",
+      201
+    );
   }
 
   async update(req: Request, res: Response): Promise<void> {
@@ -45,7 +67,11 @@ export class EmployeeController extends BaseController {
     const updatedEmployeeData = req.body;
     const updatedEmployee = new EmployeeModel(updatedEmployeeData);
     if (!updatedEmployee.validate()) {
-      res.status(400).send("Invalid employee data");
+      new ErrorResponse(res).sendError(
+        "Invalid employee data",
+        "Bad request",
+        400
+      );
       return;
     }
     try {
@@ -53,9 +79,13 @@ export class EmployeeController extends BaseController {
         where: { id: Number(id) },
         data: updatedEmployeeData,
       });
-      res.json(new EmployeeModel(updatedEmployeeInDb));
+      new SuccessResponse(res).sendSuccess(
+        new EmployeeModel(updatedEmployeeInDb),
+        "Employee updated",
+        200
+      );
     } catch (error) {
-      res.status(404).send("Employee not found");
+      new ErrorResponse(res).sendError("Employee not found", "Not found", 404);
     }
   }
 
@@ -65,9 +95,13 @@ export class EmployeeController extends BaseController {
       const deletedEmployee = await prisma.employee.delete({
         where: { id: Number(id) },
       });
-      res.json(new EmployeeModel(deletedEmployee));
+      new SuccessResponse(res).sendSuccess(
+        new EmployeeModel(deletedEmployee),
+        "Employee deleted",
+        200
+      );
     } catch (error) {
-      res.status(404).send("Employee not found");
+      new ErrorResponse(res).sendError("Employee not found", "Not found", 404);
     }
   }
 }
