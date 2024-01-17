@@ -27,7 +27,6 @@ export class EmployeeModel extends BaseModel {
     this.password = password || "";
   }
 
-  // Implement the validate method
   validate(): boolean {
     if (
       this.isFieldEmpty(this.firstName) ||
@@ -36,22 +35,19 @@ export class EmployeeModel extends BaseModel {
     ) {
       return false;
     }
-    // Add more validation logic as needed
     return true;
   }
 
-  // Additional methods
   getFullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  // Method to validate email format
   validateEmail(): boolean {
-    const re = /\S+@\S+\.\S+/;
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(this.email);
   }
 
-  // Method to validate password length
+
   validatePassword(): boolean {
     return this.password.length >= 8;
   }
