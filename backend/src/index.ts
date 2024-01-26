@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { router as EmployeeRouter } from "./routes/EmployeeRoutes";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
@@ -10,7 +11,8 @@ const port = process.env.PORT || 3000;
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
-
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(EmployeeRouter);
 
 app.listen(port, () => {
